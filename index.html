@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Oyekunle Kolade David · Portfolio</title>
+<meta name="description" content="Oyekunle Kolade David (TechPilot). Projects including Flight Ops, a flight operations management system for a helicopter unit." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@500;600;700&family=Public+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --paper: #E8EDEF;      /* aeronautical chart paper */
+    --sheet: #F6F8F9;
+    --ink: #17222D;
+    --ink-soft: #4B5A68;
+    --magenta: #A3246F;    /* chart magenta: airports, airspace */
+    --chart-blue: #1E4C78; /* chart blue: controlled airspace */
+    --terrain: #CDBE96;
+    --rule: #C9D3D9;
+    --focus: #A3246F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #121A21; --sheet: #18222B; --ink: #E3E9ED; --ink-soft: #9DAAB5;
+      --magenta: #E06AAE; --chart-blue: #7FB0DD; --terrain: #8C7F5C; --rule: #2A3743; --focus: #E06AAE;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #121A21; --sheet: #18222B; --ink: #E3E9ED; --ink-soft: #9DAAB5;
+    --magenta: #E06AAE; --chart-blue: #7FB0DD; --terrain: #8C7F5C; --rule: #2A3743; --focus: #E06AAE;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 400 17px/1.6 "Public Sans", system-ui, sans-serif; }
+  a { color: var(--chart-blue); text-underline-offset: 3px; }
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  @media (min-width: 720px) { .wrap { padding: 0 40px; } }
+  h1, h2, h3 { font-family: "Saira Semi Condensed", sans-serif; line-height: 1.1; margin: 0; letter-spacing: 0.005em; }
+
+  /* ── Hero: a chart sheet with a graticule ── */
+  .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--rule);
+    background:
+      linear-gradient(var(--rule) 1px, transparent 1px) 0 0 / 100% 96px,
+      linear-gradient(90deg, var(--rule) 1px, transparent 1px) 0 0 / 96px 100%,
+      var(--sheet);
+  }
+  .hero .wrap { position: relative; padding-top: 56px; padding-bottom: 56px; }
+  .hero h1 { font-size: clamp(40px, 7vw, 76px); font-weight: 700; max-width: 14ch; }
+  .hero .headline { font-size: clamp(19px, 2.4vw, 24px); color: var(--ink-soft); margin: 14px 0 0; max-width: 40ch; }
+  .hero nav { display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 22px; font-weight: 600; }
+
+  .decoder { margin-top: 48px; background: var(--paper); border: 1px solid var(--rule); border-radius: 6px; padding: 20px; max-width: 760px; }
+  .decoder p.lead { margin: 0 0 12px; color: var(--ink-soft); font-size: 15px; }
+  .metar { font: 500 clamp(15px, 2.2vw, 19px)/1.9 "JetBrains Mono", ui-monospace, monospace; display: flex; flex-wrap: wrap; gap: 6px 10px; margin: 0; padding: 0; list-style: none; }
+  .metar button { font: inherit; color: var(--ink); background: transparent; border: 1px solid transparent; border-radius: 4px; padding: 0 6px; cursor: pointer; }
+  .metar button:hover { border-color: var(--rule); }
+  .metar button[aria-pressed="true"] { background: var(--magenta); color: #fff; border-color: var(--magenta); }
+  .reading { margin-top: 14px; min-height: 3.2em; font-size: 18px; }
+  .reading strong { font-family: "Saira Semi Condensed", sans-serif; font-weight: 600; color: var(--magenta); margin-right: 6px; }
+
+  /* ── Sections ── */
+  section { padding: 64px 0; border-bottom: 1px solid var(--rule); }
+  section h2 { font-size: clamp(30px, 4vw, 42px); font-weight: 700; }
+  .cols { display: grid; gap: 28px; margin-top: 24px; }
+  @media (min-width: 860px) { .cols { grid-template-columns: 1.2fr 1fr; gap: 56px; } }
+  .prose p { margin: 0 0 14px; max-width: 64ch; }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .project-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .project-head .links { display: flex; gap: 18px; font-weight: 600; }
+  .summary { font-size: 20px; max-width: 58ch; margin: 16px 0 0; }
+
+  /* The nine gates: a real sequence, drawn as a route with waypoints */
+  .route { list-style: none; margin: 36px 0 0; padding: 0; display: grid; gap: 0; counter-reset: wp; }
+  .route li { counter-increment: wp; display: grid; grid-template-columns: 44px 1fr; gap: 14px; position: relative; padding-bottom: 18px; }
+  .route li::before { content: counter(wp); width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--chart-blue); color: var(--chart-blue); background: var(--sheet);
+    display: grid; place-items: center; font: 600 15px "Saira Semi Condensed", sans-serif; position: relative; z-index: 1; }
+  .route li::after { content: ""; position: absolute; left: 16px; top: 34px; bottom: 0; border-left: 2px dashed var(--terrain); }
+  .route li:last-child::after { display: none; }
+  .route li.hot::before { border-color: var(--magenta); color: var(--magenta); }
+  .route b { font-family: "Saira Semi Condensed", sans-serif; font-weight: 600; font-size: 19px; display: block; }
+  .route span { color: var(--ink-soft); font-size: 15px; }
+  @media (min-width: 860px) {
+    .route { grid-template-columns: repeat(9, 1fr); gap: 10px; }
+    .route li { grid-template-columns: 1fr; gap: 10px; padding-bottom: 0; }
+    .route li::after { left: 36px; right: -10px; top: 16px; bottom: auto; border-left: 0; border-top: 2px dashed var(--terrain); }
+  }
+  .route-note { margin: 18px 0 0; font-size: 15px; color: var(--ink-soft); }
+  .route-note i { color: var(--magenta); font-style: normal; font-weight: 600; }
+
+  .features { display: grid; gap: 0; margin-top: 40px; border-top: 1px solid var(--rule); }
+  @media (min-width: 720px) { .features { grid-template-columns: 1fr 1fr; column-gap: 48px; } }
+  .features div { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .features h3 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .features p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+
+  .stack { margin-top: 40px; }
+  .stack dl { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 14px 0 0; }
+  .stack dt { font-weight: 600; }
+  .stack dd { margin: 0; color: var(--ink-soft); }
+
+  .contact .wrap { display: grid; gap: 14px; }
+  .contact ul { list-style: none; padding: 0; margin: 8px 0 0; display: flex; flex-wrap: wrap; gap: 10px 26px; font-weight: 600; font-size: 18px; }
+  footer { padding: 28px 0 40px; color: var(--ink-soft); font-size: 14px; }
+  .theme-toggle { font: 600 14px "Public Sans", sans-serif; color: var(--ink-soft); background: none; border: 1px solid var(--rule); border-radius: 4px; padding: 4px 10px; cursor: pointer; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .reading.swap { animation: settle .35s ease-out; }
+    @keyframes settle { from { opacity: .2; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <h1>Oyekunle Kolade David</h1>
+    <p class="headline">TechPilot</p>
+    <nav aria-label="Links">
+      <a href="#flight-ops">Flight Ops project</a>
+      <a href="https://github.com/Blacfalcon">GitHub</a>
+      <a href="https://www.linkedin.com/in/oyekunle-kolade">LinkedIn</a>
+      <a href="mailto:oyekunle.kolade@gmail.com">Email</a>
+    </nav>
+
+    <div class="decoder" aria-labelledby="decoder-title">
+      <p class="lead" id="decoder-title">A weather report as a pilot reads it. Choose any group to see what it means; this is the plain-English reader built into Flight Ops.</p>
+      <ul class="metar" id="metar"></ul>
+      <p class="reading" id="reading" aria-live="polite"></p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section id="about">
+    <div class="wrap cols">
+      <h2>About</h2>
+      <div class="prose">
+        <p>I’m a pilot who builds software for aviation teams: tools that plan, check and record flying operations, and that keep working offline.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="flight-ops">
+    <div class="wrap">
+      <div class="project-head">
+        <h2>Flight Ops</h2>
+        <p class="links"><a href="https://github.com/Blacfalcon/flight-ops">Source code</a></p>
+      </div>
+      <p class="summary">A flight operations system for a military helicopter unit. It takes each sortie from aircraft serviceability to debrief, and it won’t let a sortie skip a step.</p>
+
+      <ol class="route" aria-label="The steps every sortie passes">
+        <li><div><b>Confirm aircraft</b><span>Engineering</span></div></li>
+        <li><div><b>Schedule + order</b><span>Ops or Training Officer</span></div></li>
+        <li><div><b>Approve order</b><span>Command</span></div></li>
+        <li><div><b>Publish</b><span>Ops Officer</span></div></li>
+        <li class="hot"><div><b>Readiness</b><span>T-60, every crew member</span></div></li>
+        <li class="hot"><div><b>Risk + IMSAFE</b><span>T-30, pilot in command</span></div></li>
+        <li class="hot"><div><b>Clear</b><span>Command</span></div></li>
+        <li><div><b>Fly</b><span>Crew</span></div></li>
+        <li><div><b>Close out</b><span>Pilot in command</span></div></li>
+      </ol>
+      <p class="route-note"><i>Magenta</i> steps run on a clock in the last hour before take-off. A background worker sends the readiness call, flags crew who don’t reply and reminds the pilot in command.</p>
+
+      <div class="features">
+        <div><h3>Approvals in the right order</h3><p>Nine roles, each with its own permissions. A sortie can’t be published until command approves its mission order, and it isn’t cleared until command approves the risk assessment.</p></div>
+        <div><h3>Risk scored, not guessed</h3><p>Eight categories rated 1 to 5, plus an IMSAFE check from every crew member. The weather score is pre-filled from the latest METAR against ICAO minima.</p></div>
+        <div><h3>Weather in plain English</h3><p>METAR and TAF go in by a simple form that writes the code, or by pasting it. Everyone reads them in plain English.</p></div>
+        <div><h3>Works with no signal</h3><p>Readiness, risk, flight plans and debriefs are saved on the phone. They’re sent automatically when the connection comes back.</p></div>
+        <div><h3>Phone first, email for action</h3><p>Every item goes to the phone through Web Push or Firebase. Only items that need someone to act also go by email, and emails never carry operational detail.</p></div>
+        <div><h3>Reports that build themselves</h3><p>Daily, weekly, monthly and quarterly summaries, with hours in HH:MM and fuel in kg and litres. They export to PDF and Excel.</p></div>
+        <div><h3>Secure by default</h3><p>Admin activates every account. Command and admin roles use a two-step code, idle sessions sign out, and an append-only audit log records every change.</p></div>
+        <div><h3>One copy per unit</h3><p>Each unit sets its own name, home aerodrome, logo and watermark in Settings. The home aerodrome is picked from Nigerian ICAO locations.</p></div>
+      </div>
+
+      <div class="stack">
+        <h3>How it’s built</h3>
+        <dl>
+          <dt>Web</dt><dd>Next.js 15, React 19, TypeScript, Tailwind CSS</dd>
+          <dt>Data</dt><dd>PostgreSQL with Prisma, S3-compatible file storage</dd>
+          <dt>Jobs</dt><dd>pg-boss worker for the mission clock, email, push and summaries</dd>
+          <dt>Security</dt><dd>argon2 passwords, rotating sessions, TOTP two-step sign-in, role-based access</dd>
+          <dt>Mobile</dt><dd>Installable web app with Web Push; Capacitor shell with Firebase for Google Play and the App Store</dd>
+          <dt>Deploy</dt><dd>Docker Compose behind Caddy with automatic HTTPS</dd>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact">
+    <div class="wrap">
+      <h2>Get in touch</h2>
+      <ul><li><a href="mailto:oyekunle.kolade@gmail.com">oyekunle.kolade@gmail.com</a></li><li><a href="https://www.linkedin.com/in/oyekunle-kolade">LinkedIn</a></li><li><a href="https://github.com/Blacfalcon">GitHub</a></li></ul>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap" style="display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center">
+    <span>Oyekunle Kolade David</span>
+    <button class="theme-toggle" id="theme" type="button">Switch to dark</button>
+  </div>
+</footer>
+
+<script>
+  // METAR decoder: each group with its plain-English reading (matches the reader in Flight Ops)
+  const groups = [
+    ['METAR', 'Routine weather observation.'],
+    ['DNAA', 'Station: Nnamdi Azikiwe International Airport, Abuja.'],
+    ['191400Z', 'Observed on the 19th at 14:00 UTC (15:00 in Nigeria).'],
+    ['24008G18KT', 'Wind from 240° at 8 knots, gusting 18 knots.'],
+    ['8000', 'Visibility 8 km.'],
+    ['-SHRA', 'Light showers of rain.'],
+    ['SCT018', 'Scattered cloud at 1,800 ft.'],
+    ['BKN030CB', 'Broken cloud at 3,000 ft, cumulonimbus (thunderstorm cloud). That makes the ceiling 3,000 ft.'],
+    ['27/23', 'Temperature 27°C, dew point 23°C.'],
+    ['Q1011', 'QNH 1011 hPa.'],
+  ];
+  const list = document.getElementById('metar');
+  const reading = document.getElementById('reading');
+  const buttons = groups.map(([code, text], i) => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = code;
+    b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', () => show(i));
+    li.appendChild(b);
+    list.appendChild(li);
+    return b;
+  });
+  function show(i) {
+    buttons.forEach((b, j) => b.setAttribute('aria-pressed', String(j === i)));
+    reading.classList.remove('swap'); void reading.offsetWidth; reading.classList.add('swap');
+    reading.innerHTML = '';
+    const s = document.createElement('strong'); s.textContent = groups[i][0];
+    reading.append(s, document.createTextNode(groups[i][1]));
+  }
+  show(7);
+
+  // Theme switch (remembered on this device only)
+  const root = document.documentElement, btn = document.getElementById('theme');
+  const sysDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : sysDark();
+  try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch (e) {}
+  const label = () => (btn.textContent = isDark() ? 'Switch to light' : 'Switch to dark');
+  label();
+  btn.addEventListener('click', () => {
+    root.dataset.theme = isDark() ? 'light' : 'dark';
+    try { localStorage.setItem('theme', root.dataset.theme); } catch (e) {}
+    label();
+  });
+</script>
+</body>
+</html>
